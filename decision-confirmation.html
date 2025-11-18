@@ -250,14 +250,18 @@
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const ticketId = urlParams.get('ticketId') || '';
+        const ticketNumber = urlParams.get('ticketNumber') || ticketId;
         const token = urlParams.get('token') || '';
         const action = urlParams.get('action') || '';
         
         // Update ticket info
-        if (ticketId) {
+        /*if (ticketId) {
             document.getElementById('ticketInfo').textContent = 'Ticket #' + ticketId;
+        }*/
+
+        if (ticketNumber) {
+            document.getElementById('ticketInfo').textContent = 'Ticket #' + ticketNumber;
         }
-        
         // Validate parameters
         if (!ticketId || !token || !action) {
             showError('Lien invalide. Veuillez utiliser le lien fourni dans l\'email.');
