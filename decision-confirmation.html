@@ -125,6 +125,35 @@
             animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
         }
         
+        .infomark {
+            width: 100px;
+            height: 100px;
+            margin: 30px auto;
+        }
+        
+        .infomark-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 3;
+            stroke: #ff9800;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        
+        .infomark-line {
+            stroke-dasharray: 20;
+            stroke-dashoffset: 20;
+            stroke-width: 3;
+            stroke: #ff9800;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        
+        .infomark-dot {
+            fill: #ff9800;
+            opacity: 0;
+            animation: fadeIn 0.3s ease-out 1s forwards;
+        }
+        
         @keyframes stroke {
             100% { stroke-dashoffset: 0; }
         }
@@ -151,6 +180,11 @@
             border: 3px solid #f44336;
         }
         
+        .decision-box.already-processed {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border: 3px solid #ff9800;
+        }
+        
         .decision-text {
             font-size: 28px;
             font-weight: 700;
@@ -164,6 +198,10 @@
         
         .decision-box.rejected .decision-text {
             color: #c62828;
+        }
+        
+        .decision-box.already-processed .decision-text {
+            color: #e65100;
         }
         
         .decision-subtext {
@@ -181,6 +219,11 @@
         
         .status.success {
             color: #2e7d32;
+            font-weight: 600;
+        }
+        
+        .status.warning {
+            color: #e65100;
             font-weight: 600;
         }
         
@@ -250,18 +293,17 @@
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const ticketId = urlParams.get('ticketId') || '';
-        const ticketNumber = urlParams.get('ticketNumber') || ticketId;
+        const ticketNumber = urlParams.get('ticketNumber') || '';
         const token = urlParams.get('token') || '';
         const action = urlParams.get('action') || '';
         
-        // Update ticket info
-        /*if (ticketId) {
-            document.getElementById('ticketInfo').textContent = 'Ticket #' + ticketId;
-        }*/
-
+        // Update ticket info - always use ticketNumber if available
         if (ticketNumber) {
             document.getElementById('ticketInfo').textContent = 'Ticket #' + ticketNumber;
+        } else if (ticketId) {
+            document.getElementById('ticketInfo').textContent = 'Ticket #' + ticketId;
         }
+        
         // Validate parameters
         if (!ticketId || !token || !action) {
             showError('Lien invalide. Veuillez utiliser le lien fourni dans l\'email.');
@@ -281,13 +323,21 @@
                     method: 'GET'
                 });
                 
-                // We don't care about the response content, just that it was called
-                showSuccess();
+                // Try to parse the response
+                const responseText = await response.text();
+                
+                // Check if already processed
+                if (responseText.includes('already') || responseText.includes('ALREADY') || responseText.includes('deja') || responseText.includes('DEJA')) {
+                    showAlreadyProcessed();
+                } else if (responseText.includes('invalid') || responseText.includes('INVALID') || responseText.includes('expired') || responseText.includes('EXPIRED')) {
+                    showError('Ce lien a expiré ou n\'est plus valide.');
+                } else {
+                    showSuccess();
+                }
                 
             } catch (error) {
                 console.error('Error:', error);
-                // Even if fetch fails (CORS, etc), the webhook was likely triggered
-                // So we show success anyway for Option A
+                // If fetch fails (CORS, etc), assume success
                 showSuccess();
             }
         }
@@ -317,6 +367,25 @@
             const statusEl = document.getElementById('status');
             statusEl.className = 'status success';
             statusEl.innerHTML = '✅ Votre décision a été enregistrée avec succès!<br><span style="font-size: 15px; color: #999;">L\'équipe Urbanix a été notifiée.</span>';
+        }
+        
+        function showAlreadyProcessed() {
+            // Hide loader
+            document.getElementById('loaderContainer').style.display = 'none';
+            
+            // Show info icon
+            const iconContainer = document.getElementById('iconContainer');
+            iconContainer.innerHTML = '<svg class="infomark" viewBox="0 0 52 52"><circle class="infomark-circle" cx="26" cy="26" r="25" fill="none"/><line class="infomark-line" x1="26" y1="20" x2="26" y2="32" stroke-linecap="round"/><circle class="infomark-dot" cx="26" cy="38" r="2"/></svg>';
+            
+            document.getElementById('title').textContent = 'Déjà traitée';
+            document.getElementById('decisionBox').classList.add('already-processed');
+            document.getElementById('decisionText').textContent = 'ℹ️ DÉJÀ TRAITÉE';
+            document.getElementById('decisionSubtext').textContent = 'ALREADY PROCESSED';
+            document.getElementById('decisionBox').style.display = 'block';
+            
+            const statusEl = document.getElementById('status');
+            statusEl.className = 'status warning';
+            statusEl.innerHTML = '⚠️ Cette demande a déjà été traitée.<br><span style="font-size: 15px; color: #999;">Une décision a déjà été enregistrée pour ce ticket.</span>';
         }
         
         function showError(message) {
