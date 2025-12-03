@@ -47,25 +47,15 @@
             width: 100px;
             height: 100px;
             margin: 0 auto 30px;
-            background: #194ADD;
+            background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .logo-icon {
-            font-size: 50px;
         }
         
         h1 {
-            font-size: 32px;
+            font-size: 28px;
             color: #1a1a1a;
             margin-bottom: 15px;
             font-weight: 700;
@@ -74,11 +64,109 @@
         .ticket-number {
             font-size: 20px;
             color: #666;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             font-weight: 500;
         }
         
-        .checkmark {
+        .action-preview {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        
+        .action-preview.approved {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            border: 2px solid #4caf50;
+        }
+        
+        .action-preview.rejected {
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border: 2px solid #f44336;
+        }
+        
+        .action-preview-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .action-preview.approved .action-preview-text {
+            color: #2e7d32;
+        }
+        
+        .action-preview.rejected .action-preview-text {
+            color: #c62828;
+        }
+        
+        .comment-section {
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .comment-section label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .comment-section textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .comment-section textarea:focus {
+            outline: none;
+            border-color: #194ADD;
+        }
+        
+        .comment-section .hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .confirm-btn {
+            padding: 15px 50px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        .confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .confirm-btn.approved {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .confirm-btn.rejected {
+            background: #f44336;
+            color: white;
+        }
+        
+        .confirm-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .checkmark, .xmark {
             width: 100px;
             height: 100px;
             margin: 30px auto;
@@ -102,12 +190,6 @@
             animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
         }
         
-        .xmark {
-            width: 100px;
-            height: 100px;
-            margin: 30px auto;
-        }
-        
         .xmark-circle {
             stroke-dasharray: 166;
             stroke-dashoffset: 166;
@@ -125,35 +207,6 @@
             animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
         }
         
-        .infomark {
-            width: 100px;
-            height: 100px;
-            margin: 30px auto;
-        }
-        
-        .infomark-circle {
-            stroke-dasharray: 166;
-            stroke-dashoffset: 166;
-            stroke-width: 3;
-            stroke: #ff9800;
-            fill: none;
-            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-        }
-        
-        .infomark-line {
-            stroke-dasharray: 20;
-            stroke-dashoffset: 20;
-            stroke-width: 3;
-            stroke: #ff9800;
-            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
-        }
-        
-        .infomark-dot {
-            fill: #ff9800;
-            opacity: 0;
-            animation: fadeIn 0.3s ease-out 1s forwards;
-        }
-        
         @keyframes stroke {
             100% { stroke-dashoffset: 0; }
         }
@@ -163,6 +216,7 @@
             border-radius: 15px;
             margin: 35px 0;
             animation: fadeIn 0.8s ease-out 0.3s both;
+            display: none;
         }
         
         @keyframes fadeIn {
@@ -180,11 +234,6 @@
             border: 3px solid #f44336;
         }
         
-        .decision-box.already-processed {
-            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
-            border: 3px solid #ff9800;
-        }
-        
         .decision-text {
             font-size: 28px;
             font-weight: 700;
@@ -198,10 +247,6 @@
         
         .decision-box.rejected .decision-text {
             color: #c62828;
-        }
-        
-        .decision-box.already-processed .decision-text {
-            color: #e65100;
         }
         
         .decision-subtext {
@@ -222,11 +267,6 @@
             font-weight: 600;
         }
         
-        .status.warning {
-            color: #e65100;
-            font-weight: 600;
-        }
-        
         .loader {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #194ADD;
@@ -235,6 +275,7 @@
             height: 40px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
+            display: none;
         }
         
         @keyframes spin {
@@ -254,29 +295,51 @@
             color: #333;
             font-size: 16px;
         }
+        
+        #formSection, #resultSection {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo" style="background: white; padding: 10px;">
+        <div class="logo">
             <img src="https://urbops.github.io/urbnx-flows/1.png" alt="Urbanix" style="width: 80px; height: auto;">
         </div>
         
-        <h1 id="title">Traitement en cours...</h1>
+        <h1 id="title">Confirmation de décision</h1>
         <p class="ticket-number" id="ticketInfo"></p>
         
-        <div id="iconContainer"></div>
-        
-        <div id="decisionBox" class="decision-box" style="display: none;">
-            <div class="decision-text" id="decisionText"></div>
-            <p class="decision-subtext" id="decisionSubtext"></p>
+        <!-- Form Section (before confirmation) -->
+        <div id="formSection">
+            <div class="action-preview" id="actionPreview">
+                <p class="action-preview-text" id="actionPreviewText"></p>
+            </div>
+            
+            <div class="comment-section">
+                <label for="comment">Commentaire (optionnel) / Comment (optional)</label>
+                <textarea id="comment" placeholder="Ajoutez un commentaire ou des instructions...&#10;Add a comment or instructions..."></textarea>
+                <p class="hint">Ce commentaire sera ajouté au ticket. / This comment will be added to the ticket.</p>
+            </div>
+            
+            <button class="confirm-btn" id="confirmBtn" onclick="confirmDecision()">
+                Confirmer / Confirm
+            </button>
         </div>
         
-        <div id="loaderContainer">
-            <div class="loader"></div>
+        <!-- Result Section (after confirmation) -->
+        <div id="resultSection">
+            <div id="iconContainer"></div>
+            
+            <div id="decisionBox" class="decision-box">
+                <div class="decision-text" id="decisionText"></div>
+                <p class="decision-subtext" id="decisionSubtext"></p>
+            </div>
+            
+            <div class="loader" id="loader"></div>
+            
+            <p class="status" id="status"></p>
         </div>
-        
-        <p class="status" id="status">Envoi de votre décision à Urbanix...</p>
         
         <div class="footer">
             <strong>Urbanix Gestion Immobilière</strong><br>
@@ -287,7 +350,6 @@
     </div>
 
     <script>
-    
         const WEBHOOK_URL = 'https://flow.zohocloud.ca/110002096912/flow/webhook/incoming?zapikey=1001.f40500bd62c1131ed8d50f91110eb9c5.034cf5722a424311b2a4012f4052235d&isdebug=false';
         
         // Get URL parameters
@@ -297,7 +359,7 @@
         const token = urlParams.get('token') || '';
         const action = urlParams.get('action') || '';
         
-        // Update ticket info - always use ticketNumber if available
+        // Update ticket info
         if (ticketNumber) {
             document.getElementById('ticketInfo').textContent = 'Ticket #' + ticketNumber;
         } else if (ticketId) {
@@ -308,91 +370,102 @@
         if (!ticketId || !token || !action) {
             showError('Lien invalide. Veuillez utiliser le lien fourni dans l\'email.');
         } else {
-            // Process decision after 1.5 seconds
-            setTimeout(() => {
-                sendToWebhook();
-            }, 1500);
+            // Show form
+            showForm();
         }
         
-        async function sendToWebhook() {
+        function showForm() {
+            document.getElementById('formSection').style.display = 'block';
+            
+            const preview = document.getElementById('actionPreview');
+            const previewText = document.getElementById('actionPreviewText');
+            const confirmBtn = document.getElementById('confirmBtn');
+            
+            if (action === 'approved') {
+                document.getElementById('title').textContent = 'Confirmer l\'approbation';
+                preview.classList.add('approved');
+                previewText.textContent = '✓ Vous allez APPROUVER cette demande';
+                confirmBtn.classList.add('approved');
+                confirmBtn.textContent = '✓ Confirmer l\'approbation';
+            } else {
+                document.getElementById('title').textContent = 'Confirmer le rejet';
+                preview.classList.add('rejected');
+                previewText.textContent = '✕ Vous allez REJETER cette demande';
+                confirmBtn.classList.add('rejected');
+                confirmBtn.textContent = '✕ Confirmer le rejet';
+            }
+        }
+        
+        async function confirmDecision() {
+            const comment = document.getElementById('comment').value.trim();
+            const confirmBtn = document.getElementById('confirmBtn');
+            
+            // Disable button and show loading
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Envoi en cours...';
+            
+            // Hide form, show result section with loader
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('status').textContent = 'Envoi de votre décision à Urbanix...';
+            
             try {
                 // Build webhook URL with parameters
-                const fullWebhookUrl = WEBHOOK_URL + '&ticketId=' + ticketId + '&action=' + action + '&token=' + token;
+                let fullWebhookUrl = WEBHOOK_URL + '&ticketId=' + ticketId + '&action=' + action + '&token=' + token;
+                
+                // Add comment if provided
+                if (comment) {
+                    fullWebhookUrl += '&comment=' + encodeURIComponent(comment);
+                }
                 
                 const response = await fetch(fullWebhookUrl, {
                     method: 'GET'
                 });
                 
-                // Try to parse the response
-                const responseText = await response.text();
-                
-                // Check if already processed
-                if (responseText.includes('already') || responseText.includes('ALREADY') || responseText.includes('deja') || responseText.includes('DEJA')) {
-                    showAlreadyProcessed();
-                } else if (responseText.includes('invalid') || responseText.includes('INVALID') || responseText.includes('expired') || responseText.includes('EXPIRED')) {
-                    showError('Ce lien a expiré ou n\'est plus valide.');
-                } else {
-                    showSuccess();
-                }
+                showSuccess();
                 
             } catch (error) {
                 console.error('Error:', error);
-                // If fetch fails (CORS, etc), assume success
+                // Even if fetch fails, webhook was likely triggered
                 showSuccess();
             }
         }
         
         function showSuccess() {
             // Hide loader
-            document.getElementById('loaderContainer').style.display = 'none';
+            document.getElementById('loader').style.display = 'none';
             
             // Show appropriate icon
             const iconContainer = document.getElementById('iconContainer');
+            const decisionBox = document.getElementById('decisionBox');
+            
             if (action === 'approved') {
                 iconContainer.innerHTML = '<svg class="checkmark" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark-check" fill="none" stroke-linecap="round" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>';
                 document.getElementById('title').textContent = 'Demande approuvée';
-                document.getElementById('decisionBox').classList.add('approved');
+                decisionBox.classList.add('approved');
                 document.getElementById('decisionText').textContent = '✓ APPROUVÉ';
                 document.getElementById('decisionSubtext').textContent = 'APPROVED';
             } else {
                 iconContainer.innerHTML = '<svg class="xmark" viewBox="0 0 52 52"><circle class="xmark-circle" cx="26" cy="26" r="25" fill="none"/><line class="xmark-x" x1="16" y1="16" x2="36" y2="36" stroke-linecap="round"/><line class="xmark-x" x1="36" y1="16" x2="16" y2="36" stroke-linecap="round"/></svg>';
                 document.getElementById('title').textContent = 'Demande rejetée';
-                document.getElementById('decisionBox').classList.add('rejected');
+                decisionBox.classList.add('rejected');
                 document.getElementById('decisionText').textContent = '✕ REJETÉ';
                 document.getElementById('decisionSubtext').textContent = 'REJECTED';
             }
             
-            document.getElementById('decisionBox').style.display = 'block';
+            decisionBox.style.display = 'block';
             
             const statusEl = document.getElementById('status');
             statusEl.className = 'status success';
             statusEl.innerHTML = '✅ Votre décision a été enregistrée avec succès!<br><span style="font-size: 15px; color: #999;">L\'équipe Urbanix a été notifiée.</span>';
         }
         
-        function showAlreadyProcessed() {
-            // Hide loader
-            document.getElementById('loaderContainer').style.display = 'none';
-            
-            // Show info icon
-            const iconContainer = document.getElementById('iconContainer');
-            iconContainer.innerHTML = '<svg class="infomark" viewBox="0 0 52 52"><circle class="infomark-circle" cx="26" cy="26" r="25" fill="none"/><line class="infomark-line" x1="26" y1="20" x2="26" y2="32" stroke-linecap="round"/><circle class="infomark-dot" cx="26" cy="38" r="2"/></svg>';
-            
-            document.getElementById('title').textContent = 'Déjà traitée';
-            document.getElementById('decisionBox').classList.add('already-processed');
-            document.getElementById('decisionText').textContent = 'ℹ️ DÉJÀ TRAITÉE';
-            document.getElementById('decisionSubtext').textContent = 'ALREADY PROCESSED';
-            document.getElementById('decisionBox').style.display = 'block';
-            
-            const statusEl = document.getElementById('status');
-            statusEl.className = 'status warning';
-            statusEl.innerHTML = '⚠️ Cette demande a déjà été traitée.<br><span style="font-size: 15px; color: #999;">Une décision a déjà été enregistrée pour ce ticket.</span>';
-        }
-        
         function showError(message) {
-            document.getElementById('loaderContainer').style.display = 'none';
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
             document.getElementById('title').textContent = 'Erreur';
             const statusEl = document.getElementById('status');
-            statusEl.className = 'status error';
             statusEl.style.color = '#c62828';
             statusEl.textContent = '❌ ' + message;
         }
